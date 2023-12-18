@@ -106,25 +106,25 @@ class SqueezeAndExcite2D(keras.layers.Layer):
         return x
 
     def get_config(self):
-        config = {
-            "filters": self.filters,
-            "bottleneck_filters": self.bottleneck_filters,
-            "squeeze_activation": self.squeeze_activation,
-            "excite_activation": self.excite_activation,
-        }
-        base_config = super().get_config()
-        return dict(list(base_config.items()) + list(config.items()))
+        config = super().get_config()
+        config.update(
+            {
+                "filters": self.filters,
+                "bottleneck_filters": self.bottleneck_filters,
+                "squeeze_activation": self.squeeze_activation,
+                "excite_activation": self.excite_activation,
+            }
+        )
+        return config
 
     @classmethod
     def from_config(cls, config):
-        if isinstance(config["squeeze_activation"], dict):
-            config[
+        config[
                 "squeeze_activation"
             ] = keras.saving.deserialize_keras_object(
                 config["squeeze_activation"]
             )
-        if isinstance(config["excite_activation"], dict):
-            config["excite_activation"] = keras.saving.deserialize_keras_object(
+        config["excite_activation"] = keras.saving.deserialize_keras_object(
                 config["excite_activation"]
             )
         return cls(**config)

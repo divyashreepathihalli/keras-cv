@@ -379,25 +379,7 @@ class SerializationTest(TestCase):
         ),
     )
     def test_layer_serialization(self, layer_cls, init_args):
-        # TODO: Some layers are not yet compatible with Keras 3.
-        if keras_3:
-            skip_layers = [
-                cv_layers.DropBlock2D,
-                cv_layers.FrustumRandomDroppingPoints,
-                cv_layers.FrustumRandomPointFeatureNoise,
-                cv_layers.GlobalRandomDroppingPoints,
-                cv_layers.GlobalRandomFlip,
-                cv_layers.GlobalRandomRotation,
-                cv_layers.GlobalRandomScaling,
-                cv_layers.GlobalRandomTranslation,
-                cv_layers.GroupPointsByBoundingBoxes,
-                cv_layers.RandomCopyPaste,
-                cv_layers.RandomDropBox,
-                cv_layers.SwapBackground,
-                cv_layers.SqueezeAndExcite2D,  # TODO: Fails in Keras 3
-            ]
-            if layer_cls in skip_layers:
-                self.skipTest("Not supported on Keras 3")
+
         layer = layer_cls(**init_args)
         config = layer.get_config()
         self.assertAllInitParametersAreInConfig(layer_cls, config)
