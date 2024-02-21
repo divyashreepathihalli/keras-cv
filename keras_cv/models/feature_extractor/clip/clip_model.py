@@ -93,6 +93,13 @@ class CLIP(Task):
         self.transformer_width = transformer_width
         self.transformer_heads = transformer_heads
         self.transformer_layers = transformer_layers
+        self.image_input = keras.layers.Input(shape=(None,), name="image")
+        self.text_input = keras.layers.Input(
+            shape=(None, None, self.context_length), name="text"
+        )
+        self.attention_mask_input = keras.layers.Input(
+            shape=(None, None, self.context_length), name="attention_mask"
+        )
 
         vision_heads = self.vision_width // 64
         self.image_encoder = CLIPImageEncoder(
@@ -133,7 +140,12 @@ class CLIP(Task):
     def encode_text(self, text, attention_mask=None):
         return self.text_encoder(text, attention_mask=attention_mask)
 
-    def call(self, image, text, attention_mask=None):
+    def call(self, inputs):
+        image, text = inputs["image"], inputs["text"]
+        if "attention_mask" in inputs:
+            attention_mask = inputs["attention_mask"]
+        else:
+            attention_mask = None
         self.image_embeddings = self.encode_images(image)
         self.text_embeddings = self.encode_text(
             text, attention_mask=attention_mask

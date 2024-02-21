@@ -49,7 +49,11 @@ class CLIPTest(TestCase):
         processed_text = np.ones(shape=[3, 77])
         attention_mask = np.ones(shape=[3, 77])
         image_logits, text_logits = model(
-            processed_image, processed_text, attention_mask
+            {
+                "image": processed_image,
+                "text": processed_text,
+                "attention_mask": attention_mask,
+            }
         )
         print(image_logits)
         self.assertAllClose(image_logits, [[2.932678, 2.932678, 2.932675]])
@@ -93,7 +97,13 @@ class CLIPTest(TestCase):
         processed_image = np.ones(shape=[1, 224, 224, 3])
         processed_text = np.ones(shape=[3, 77])
         attention_mask = np.ones(shape=[3, 77])
-        model(processed_image, processed_text, attention_mask)
+        model(
+            {
+                "image": processed_image,
+                "text": processed_text,
+                "attention_mask": attention_mask,
+            }
+        )
         self.assertAllClose(
             model.image_embeddings[:, :5],
             [[0.023215, 0.026526, 0.008914, -0.091689, 0.021791]],
@@ -105,7 +115,13 @@ class CLIPTest(TestCase):
         processed_image = np.ones(shape=[1, 224, 224, 3])
         processed_text = np.ones(shape=[3, 77])
         attention_mask = np.ones(shape=[3, 77])
-        model(processed_image, processed_text, attention_mask)
+        model(
+            {
+                "image": processed_image,
+                "text": processed_text,
+                "attention_mask": attention_mask,
+            }
+        )
         print(model.text_embeddings)
         self.assertAllClose(
             model.text_embeddings[0, :3],
@@ -118,7 +134,13 @@ class CLIPTest(TestCase):
         processed_image = np.ones(shape=[1, 224, 224, 3])
         processed_text = np.ones(shape=[3, 77])
         attention_mask = np.ones(shape=[3, 77])
-        model_output, _ = model(processed_image, processed_text, attention_mask)
+        model_output, _ = model(
+            {
+                "image": processed_image,
+                "text": processed_text,
+                "attention_mask": attention_mask,
+            }
+        )
         save_path = os.path.join(self.get_temp_dir(), "model.keras")
         if keras_3():
             model.save(save_path)
@@ -130,6 +152,10 @@ class CLIPTest(TestCase):
         self.assertIsInstance(restored_model, CLIP)
         # Check that output matches.
         restored_output, _ = restored_model(
-            processed_image, processed_text, attention_mask
+            {
+                "image": processed_image,
+                "text": processed_text,
+                "attention_mask": attention_mask,
+            }
         )
         self.assertAllClose(model_output, restored_output)
