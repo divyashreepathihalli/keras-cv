@@ -285,7 +285,7 @@ class CLIPAttention(keras.layers.Layer):
             attention_scores = ops.add(attention_scores, attention_mask)
 
         # Normalize the attention scores to probabilities.
-        attention_probs = ops.softmax(attention_scores + 1e-9, axis=-1)
+        attention_probs = ops.softmax(attention_scores, axis=-1)
 
         # This is actually dropping out entire tokens to attend to, which might
         # seem a bit unusual, but is taken from the original Transformer paper.

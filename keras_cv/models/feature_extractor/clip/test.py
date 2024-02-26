@@ -52,3 +52,4 @@ model.fit(
     epochs=2,
     batch_size=1,
 )
+print("done with model fit")

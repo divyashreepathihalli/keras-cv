@@ -83,18 +83,16 @@ class CLIPTextEncoder(keras.Model):
         causal_attention_mask = ops.triu(causal_attention_mask)
         causal_attention_mask = ops.cast(causal_attention_mask, "float32")
         attention_mask = ops.cast(attention_mask, dtype="float32")
-        print("attention mask shape", attention_mask.shape, len(attention_mask.shape))
-        if len(attention_mask.shape) == 2:
-            expanded_mask = ops.tile(
-                attention_mask[:, None, None, :], (1, 1, self.context_length, 1)
-            )
-            expanded_mask = (1.0 - expanded_mask) * (-1e8)
-        else:
-            attention_mask = ops.squeeze(attention_mask, axis=0)
-            expanded_mask = ops.tile(
-                attention_mask[:, None, None, :], (1, 1, self.context_length, 1)
-            )
-            expanded_mask = (1.0 - expanded_mask) * (-1e8)
+        print(
+            "attention mask shape",
+            attention_mask.shape,
+            len(attention_mask.shape),
+        )
+        expanded_mask = ops.tile(
+            attention_mask[:, None, None, :], (1, 1, self.context_length, 1)
+        )
+        expanded_mask = (1.0 - expanded_mask) * (-1e8)
+
         print("attention mask shape after expanding", expanded_mask.shape)
         encoded_output = self.encoder(
             token_embedding + position_embedding,
